@@ -182,3 +182,11 @@ spec:
         host: view-service.pyapp-istio-test.svc.cluster.local
         port:
           number: 5002
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: add-service.pyapp-istio-test.svc.cluster.local
+        port:
+          number: 5001
