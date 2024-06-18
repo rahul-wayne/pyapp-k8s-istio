@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb-deployment
+  namespace: pyapp-istio-test
+  labels:
+    app: mongodb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+      - name: mongodb
+        image: mongo:latest
+        ports:
+        - containerPort: 27017
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mongo-init-job
+  namespace: pyapp-istio-test
+spec:
+  template:
+    spec:
+      containers:
+      - name: mongo-init
+        image: mongo:latest
+        command: ["sh", "-c", "mongosh --host mongodb-service --eval 'use microserviceDB; db.createCollection(\"data\")'"]
+      restartPolicy: OnFailure
+
+---        
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: view-deployment
+  namespace: pyapp-istio-test
+  labels:
+    app: view-microservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: view-microservice
+  template:
+    metadata:
+      labels:
+        app: view-microservice
+    spec:
+      containers:
+      - name: view-microservice
+        image: docker.io/blackpearl001/view-data
+        ports:
+        - containerPort: 5002
+
+---        
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: add-deployment
+  namespace: pyapp-istio-test
+  labels:
+    app: add-microservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: add-microservice
+  template:
+    metadata:
+      labels:
+        app: add-microservice
+    spec:
+      containers:
+      - name: add-microservice
+        image: docker.io/blackpearl001/add-data
+        ports:
+        - containerPort: 5001
+
+#---
+#apiVersion: apps/v1
+#kind: Deployment
+#metadata:
+#  name: nginx-deployment
+#  namespace: pyapp-istio-test
+#spec:
+#  replicas: 1  # Number of replicas
+#  selector:
+#    matchLabels:
+#      app: nginx
+#  template:
+#    metadata:
+#      labels:
+#        app: nginx
+#    spec:
+#      containers:
+#      - name: nginx
+#        image: docker.io/blackpearl001/nginx  # Using the alpine version of nginx
+#        ports:
+#        - containerPort: 80  # Nginx listens on port 80

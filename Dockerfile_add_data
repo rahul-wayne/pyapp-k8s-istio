@@ -1,0 +1,7 @@
+FROM python:3.8-slim
+WORKDIR /app
+RUN pip install flask pymongo
+COPY add_data.py .
+COPY templates/add_data.html templates/
+EXPOSE 5001
+CMD ["python", "add_data.py"]
