@@ -11,10 +11,14 @@ resources:
 variables:
 
   # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: '4ee81322-33fc-4229-9ad3-7f8bd0a19c1e'
-  imageRepository_view: 'viewmicroservice'
-  imageRepository_add: 'addmicroservice'
-  containerRegistry: 'xxdockerimage.azurecr.io'
+  #dockerRegistryServiceConnection: '4ee81322-33fc-4229-9ad3-7f8bd0a19c1e'
+  dockerRegistryServiceConnection: 'dockerhub'
+  #imageRepository_view: 'viewmicroservice'
+  #imageRepository_add: 'addmicroservice'
+  #containerRegistry: 'xxdockerimage.azurecr.io'
+  imageRepository_view: 'view-data'
+  imageRepository_add: 'add-data'
+  containerRegistry: 'docker.io/blackpearl001'
   dockerfilePath_view: 'Dockerfile_view_data'
   dockerfilePath_add: 'Dockerfile_add_data'
   tag: '$(Build.BuildId)'
