@@ -94,13 +94,13 @@ stages:
     - upload: manifests
       artifact: manifests
 
-    - task: Bash@3
-      displayName: Cleanup docker image 
-      inputs:
-        targetType: 'inline'
-        script: |
-          docker rmi $(containerRegistry)/$(imageRepository_view):$(tag)
-          docker rmi $(containerRegistry)/$(imageRepository_add):$(tag)
+    #- task: Bash@3
+    #  displayName: Cleanup docker image 
+    #  inputs:
+    #    targetType: 'inline'
+    #    script: |
+    #      docker rmi $(containerRegistry)/$(imageRepository_view):$(tag)
+    #      docker rmi $(containerRegistry)/$(imageRepository_add):$(tag)
 
 - stage: Deploy
   displayName: Deploy stage
