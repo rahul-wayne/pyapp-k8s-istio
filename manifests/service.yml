@@ -41,20 +41,6 @@ spec:
       port: 5001
   type: ClusterIP
 
-#---
-#apiVersion: v1
-#kind: Service
-#metadata:
-#  name: nginx-service
-#  namespace: pyapp-istio-test
-#spec:
-#  selector:
-#    app: nginx
-#  ports:
-#  - protocol: TCP
-#    port: 80  # The service port
-#    targetPort: 80  # The container port
-
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: Gateway
@@ -71,80 +57,6 @@ spec:
       protocol: HTTP
     hosts:
     - "*"
-
-#---
-#apiVersion: networking.istio.io/v1beta1
-#kind: VirtualService
-#metadata:
-#  name: nginx-virtualservice
-#  namespace: pyapp-istio-test
-#spec:
-#  hosts:
-#  - "*"
-#  gateways:
-#  -  pyapp-gateway # Use istio-system/aks-istio-ingressgateway-internal for internal access
-#  http:
-#  #- match:
-#  #  - uri:
-#  #      prefix: /
-#  - route:
-#    - destination:
-#        host: nginx-service.pyapp-istio-test.svc.cluster.local
-#        port:
-#          number: 80
-#  - match:
-#    - uri:
-#        prefix: /data
-#    route:
-#    - destination:
-#        host: add-service.pyapp-istio-test.svc.cluster.local
-#        port:
-#          number: 5001
-
-#---
-#apiVersion: networking.istio.io/v1beta1
-#kind: DestinationRule
-#metadata:
-#  name: nginx-destinationrule
-#  namespace: pyapp-istio-test
-#spec:
-#  host: nginx-service.pyapp-istio-test.svc.cluster.local
-#  trafficPolicy:
-#    loadBalancer:
-#      #simple: ROUND_ROBIN
-#      simple: RANDOM
-      #tls:
-      #  mode: ISTIO_MUTUAL
-  #subsets:
-  #- name: v3
-  #  labels:
-  #    version: v3
-
-#---
-#apiVersion: networking.istio.io/v1beta1
-#kind: DestinationRule
-#metadata:
-#  name: add-destinationrule
-#  namespace: pyapp-istio-test
-#spec:
-#  host: add-service.pyapp-istio-test.svc.cluster.local
-#  trafficPolicy:
-#    loadBalancer:
-#      #simple: ROUND_ROBIN
-#      simple: RANDOM
-
-#---
-#apiVersion: networking.istio.io/v1beta1
-#kind: DestinationRule
-#metadata:
-#  name: add-service-dr
-#  namespace: pyapp-istio-test
-#spec:
-#  host: add-service.pyapp-istio-test.svc.cluster.local
-#  subsets:
-#  - name: v1
-#    labels:
-#      version: v1
 
 ---
 apiVersion: networking.istio.io/v1beta1
