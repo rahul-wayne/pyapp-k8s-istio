@@ -69,8 +69,7 @@ stages:
       inputs:
         targetType: 'inline'    
         script: |
-          docker buildx build -f Dockerfile_view_data --platform linux/amd64,linux/arm64 -t blackpearl001/view-data --push .
-   #       docker buildx build -f $(dockerfilePath_view) --platform linux/amd64,linux/arm64 -t $(imageRepository_view):$(tag) --push .
+          docker buildx build -f $(dockerfilePath_view) --platform linux/amd64,linux/arm64 -t $(imageRepository_view):$(tag) --push .
 
 
     #- task: Docker@2
