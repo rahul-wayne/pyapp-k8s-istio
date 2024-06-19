@@ -39,7 +39,7 @@ stages:
       vmImage: $(vmImageName)
     steps:
     - task: Docker@2
-      displayName: 'Login to Azure Container Registry'
+      displayName: 'Login to Docker Container Registry'
       inputs:
         containerRegistry: $(dockerRegistryServiceConnection)  # Use the name of your Azure Service Connection
         command: 'login'
@@ -59,7 +59,8 @@ stages:
       inputs:
         targetType: 'inline'    
         script: |
-          docker buildx build -f $(dockerfilePath_view) --platform linux/amd64,linux/arm64 -t $(imageRepository_view):$(tag) --push .
+          docker buildx build -f Dockerfile_view_data --platform linux/amd64,linux/arm64 -t blackpearl001/view-data --push .
+   #       docker buildx build -f $(dockerfilePath_view) --platform linux/amd64,linux/arm64 -t $(imageRepository_view):$(tag) --push .
 
 
     #- task: Docker@2
