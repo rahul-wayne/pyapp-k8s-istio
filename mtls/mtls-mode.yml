@@ -1,0 +1,9 @@
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: default
+  #name: mtls-mode
+  namespace: aks-istio-system  # Usually istio-system is the control plane namespace
+spec:
+  mtls:
+    mode: STRICT

@@ -82,3 +82,26 @@ spec:
         image: xxdockerimage.azurecr.io/addmicroservice
         ports:
         - containerPort: 5001
+
+---        
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: index-deployment
+  labels:
+    app: index-microservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: index-microservice
+  template:
+    metadata:
+      labels:
+        app: index-microservice
+    spec:
+      containers:
+      - name: index-microservice
+        image: xxdockerimage.azurecr.io/indexmicroservice
+        ports:
+        - containerPort: 5000

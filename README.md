@@ -109,3 +109,28 @@ docker buildx inspect mybuilder
 
 6. Push the Multi-Platform Image:
 docker buildx build --platform linux/amd64,linux/arm64 -t your-registry/your-image-name:tag --push .
+
+
+
+*   To enable mutual TLS (mTLS) across your entire Istio service mesh, you need to configure PeerAuthentication and DestinationRule
+to achive this, apply ymls in mtls directory
+
+Ensure that the PeerAuthentication policy is correctly applied:
+
+kubectl describe peerauthentication default -n aks-istio-system
+
+Ensure that the DestinationRule is correctly applied:
+
+kubectl describe destinationrule default -n aks-istio-system
+
+
+https://istio.io/latest/docs/setup/getting-started/#bookinfo
+
+kubectl apply -f istio-1.22.1/samples/sleep/sleep.yaml
+kubectl apply -f istio-1.22.1/samples/httpbin/httpbin.yaml
+
+https://istio.io/latest/docs/tasks/security/tls-configuration/workload-min-tls-version/
+
+kubectl exec -it <pod> -n <namespace> -- curl -v http://httpbin.default.svc.cluster.local:8000/ip
+
+

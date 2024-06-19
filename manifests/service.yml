@@ -39,6 +39,19 @@ spec:
   type: ClusterIP
 
 ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: index-service
+spec:
+  selector:
+    app: index-microservice
+  ports:
+    - protocol: TCP
+      port: 5000
+  type: ClusterIP
+
+---
 apiVersion: networking.istio.io/v1beta1
 kind: Gateway
 metadata:
@@ -94,6 +107,6 @@ spec:
         prefix: /
     route:
     - destination:
-        host: add-service.pyapp-istio-test.svc.cluster.local
+        host: index-service.pyapp-istio-test.svc.cluster.local
         port:
-          number: 5001
+          number: 5000

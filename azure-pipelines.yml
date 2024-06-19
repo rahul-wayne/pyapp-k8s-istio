@@ -15,12 +15,14 @@ variables:
   #dockerRegistryServiceConnection: 'dockerhub'
   imageRepository_view: 'viewmicroservice'
   imageRepository_add: 'addmicroservice'
+  imageRepository_index: 'indexmicroservice'
   containerRegistry: 'xxdockerimage.azurecr.io'
   #imageRepository_view: 'view-data'
   #imageRepository_add: 'add-data'
   #containerRegistry: 'docker.io/blackpearl001'
   dockerfilePath_view: 'Dockerfile_view_data'
   dockerfilePath_add: 'Dockerfile_add_data'
+  dockerfilePath_index: 'Dockerfile_index'
   tag: '$(Build.BuildId)'
   imagePullSecret: 'xxdockerimage6490c5db-auth'
 
@@ -66,7 +68,7 @@ stages:
           docker buildx inspect --bootstrap
 
     - task: Bash@3
-      displayName: 'Build and Push view_microservice Docker Image using Buildx'
+      displayName: 'Build and Push view microservice Docker Image using Buildx'
       inputs:
         targetType: 'inline'    
         script: |
@@ -86,11 +88,18 @@ stages:
     #    addPipelineData: true
 
     - task: Bash@3
-      displayName: 'Build and Push add_microservice Docker Image using Buildx'
+      displayName: 'Build and Push add microservice Docker Image using Buildx'
       inputs:
         targetType: 'inline'  
         script: |
           docker buildx build -f $(dockerfilePath_add) --platform linux/amd64,linux/arm64 -t $(containerRegistry)/$(imageRepository_add):$(tag) --push .
+
+    - task: Bash@3
+      displayName: 'Build and Push index microservice Docker Image using Buildx'
+      inputs:
+        targetType: 'inline'  
+        script: |
+          docker buildx build -f $(dockerfilePath_index) --platform linux/amd64,linux/arm64 -t $(containerRegistry)/$(imageRepository_index):$(tag) --push .
 
     - upload: manifests
       artifact: manifests
@@ -137,3 +146,4 @@ stages:
               containers: |
                 $(containerRegistry)/$(imageRepository_view):$(tag)
                 $(containerRegistry)/$(imageRepository_add):$(tag)
+                $(containerRegistry)/$(imageRepository_index):$(tag)

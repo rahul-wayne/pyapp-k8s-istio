@@ -1,0 +1,11 @@
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: default
+  #name: mtls-destination-rule
+  namespace: aks-istio-system  # Replace with your namespace if needed
+spec:
+  host: "*.local"
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL

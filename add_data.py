@@ -8,9 +8,9 @@ client = MongoClient('mongodb://mongodb-service:27017/')
 db = client['microserviceDB']
 collection = db['data']
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+#@app.route('/')
+#def index():
+#    return render_template('index.html')
 
 @app.route('/data', methods=['GET', 'POST'])
 def add_data():

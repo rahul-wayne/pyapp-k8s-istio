@@ -1,0 +1,7 @@
+FROM python:3.8-slim
+WORKDIR /app
+RUN pip install flask pymongo
+COPY index.py .
+COPY templates/index.html templates/
+EXPOSE 5000
+CMD ["python", "index.py"]
