@@ -129,6 +129,7 @@ kubectl describe destinationrule default -n aks-istio-system
 https://istio.io/latest/docs/setup/getting-started/#bookinfo
 
 kubectl apply -f istio-1.22.1/samples/sleep/sleep.yaml
+
 kubectl apply -f istio-1.22.1/samples/httpbin/httpbin.yaml
 
 https://istio.io/latest/docs/tasks/security/tls-configuration/workload-min-tls-version/
