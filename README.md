@@ -47,7 +47,8 @@ kubectl get svc -n aks-istio-ingress
 
 
 Setup custom buildx builder for multi-platform docker image building
-+++++++++++++++++
+-------------------
+
 On AMD64
 -------
 1. Install QEMU:
