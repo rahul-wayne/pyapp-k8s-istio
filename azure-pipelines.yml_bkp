@@ -11,16 +11,12 @@ resources:
 variables:
 
   # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: '74c816c8-4a99-49b6-8f3f-a6f26d9fa25a'
-  imageRepository_view: 'viewmicroservice'
-  imageRepository_add: 'addmicroservice'
-  imageRepository_nginx: 'nginxmicroservice'
+  dockerRegistryServiceConnection: '4ee81322-33fc-4229-9ad3-7f8bd0a19c1e'
+  imageRepository: 'test'
   containerRegistry: 'xxdockerimage.azurecr.io'
-  dockerfilePath_view: '**/Dockerfile_view_data'
-  dockerfilePath_add: '**/Dockerfile_add_data'
-  dockerfilePath_nginx: '**/Dockerfile_nginx'
+  dockerfilePath: '**/Dockerfile'
   tag: '$(Build.BuildId)'
-  imagePullSecret: 'xxdockerimage392387d0-auth'
+  imagePullSecret: 'xxdockerimage6490c5db-auth'
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
@@ -33,50 +29,20 @@ stages:
   - job: Build
     displayName: Build
     pool:
-      name: dev
       vmImage: $(vmImageName)
     steps:
     - task: Docker@2
-      displayName: Build and push an image view_microservice
+      displayName: Build and push an image to container registry
       inputs:
         command: buildAndPush
-        repository: $(imageRepository_view)
-        dockerfile: $(dockerfilePath_view)
-        containerRegistry: $(dockerRegistryServiceConnection)
-        tags: |
-          $(tag)
-
-    - task: Docker@2
-      displayName: Build and push an image add_microservice
-      inputs:
-        command: buildAndPush
-        repository: $(imageRepository_add)
-        dockerfile: $(dockerfilePath_add)
-        containerRegistry: $(dockerRegistryServiceConnection)
-        tags: |
-          $(tag)
-    
-    - task: Docker@2
-      displayName: Build and push an image nginx_microservice
-      inputs:
-        command: buildAndPush
-        repository: $(imageRepository_nginx)
-        dockerfile: $(dockerfilePath_nginx)
+        repository: $(imageRepository)
+        dockerfile: $(dockerfilePath)
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
 
     - upload: manifests
       artifact: manifests
-
-    - task: Bash@3
-      displayName: Cleanup docker image 
-      inputs:
-        targetType: 'inline'
-        script: |
-          docker rmi $(containerRegistry)/$(imageRepository_view):$(tag)
-          docker rmi $(containerRegistry)/$(imageRepository_add):$(tag)
-          docker rmi $(containerRegistry)/$(imageRepository_nginx):$(tag)
 
 - stage: Deploy
   displayName: Deploy stage
@@ -86,9 +52,8 @@ stages:
   - deployment: Deploy
     displayName: Deploy
     pool:
-      name: dev
       vmImage: $(vmImageName)
-    environment: 'rahulwaynepyappmicroservice-1883.pyapp'
+    environment: 'rahulwaynepyappk8sistio.pyapp-istio-test'
     strategy:
       runOnce:
         deploy:
@@ -110,6 +75,5 @@ stages:
               imagePullSecrets: |
                 $(imagePullSecret)
               containers: |
-                $(containerRegistry)/$(imageRepository_view):$(tag)
-                $(containerRegistry)/$(imageRepository_add):$(tag)
-                $(containerRegistry)/$(imageRepository_nginx):$(tag)
+                $(containerRegistry)/$(imageRepository):$(tag)
+

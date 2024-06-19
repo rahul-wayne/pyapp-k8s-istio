@@ -12,9 +12,11 @@ variables:
 
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: '4ee81322-33fc-4229-9ad3-7f8bd0a19c1e'
-  imageRepository: 'test'
+  imageRepository_view: 'viewmicroservice'
+  imageRepository_add: 'addmicroservice'
   containerRegistry: 'xxdockerimage.azurecr.io'
-  dockerfilePath: '**/Dockerfile'
+  dockerfilePath_view: '**/Dockerfile_view_data'
+  dockerfilePath_add: '**/Dockerfile_add_data'
   tag: '$(Build.BuildId)'
   imagePullSecret: 'xxdockerimage6490c5db-auth'
 
@@ -29,20 +31,51 @@ stages:
   - job: Build
     displayName: Build
     pool:
+      name: dev
       vmImage: $(vmImageName)
     steps:
     - task: Docker@2
-      displayName: Build and push an image to container registry
+      displayName: Build and push an image view_microservice
       inputs:
-        command: buildAndPush
-        repository: $(imageRepository)
-        dockerfile: $(dockerfilePath)
+        command: build
+        repository: $(imageRepository_view)
+        dockerfile: $(dockerfilePath_view)
         containerRegistry: $(dockerRegistryServiceConnection)
+        buildContext: .
         tags: |
           $(tag)
+        addPipelineData: true
+    - script: |
+        docker buildx build --platform linux/amd64,linux/arm64 -t $(imageRepository_view):$(tag) --push .
+      displayName: Build and Push View Docker Image using Buildx
+
+
+    - task: Docker@2
+      displayName: Build and push an image add_microservice
+      inputs:
+        command: build
+        repository: $(imageRepository_add)
+        dockerfile: $(dockerfilePath_add)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        buildContext: .
+        tags: |
+          $(tag)
+        addPipelineData: true
+
+    - script: |
+        docker buildx build --platform linux/amd64,linux/arm64 -t $(imageRepository_add):$(tag) --push .
+      displayName: Build and Push Add Docker Image using Buildx
 
     - upload: manifests
       artifact: manifests
+
+    - task: Bash@3
+      displayName: Cleanup docker image 
+      inputs:
+        targetType: 'inline'
+        script: |
+          docker rmi $(containerRegistry)/$(imageRepository_view):$(tag)
+          docker rmi $(containerRegistry)/$(imageRepository_add):$(tag)
 
 - stage: Deploy
   displayName: Deploy stage
@@ -52,6 +85,7 @@ stages:
   - deployment: Deploy
     displayName: Deploy
     pool:
+      name: dev
       vmImage: $(vmImageName)
     environment: 'rahulwaynepyappk8sistio.pyapp-istio-test'
     strategy:
@@ -75,5 +109,5 @@ stages:
               imagePullSecrets: |
                 $(imagePullSecret)
               containers: |
-                $(containerRegistry)/$(imageRepository):$(tag)
-
+                $(containerRegistry)/$(imageRepository_view):$(tag)
+                $(containerRegistry)/$(imageRepository_add):$(tag)

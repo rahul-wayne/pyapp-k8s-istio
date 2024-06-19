@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mongodb-deployment
+  namespace: pyapp-istio-test
   labels:
     app: mongodb
 spec:
@@ -25,6 +26,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: mongo-init-job
+  namespace: pyapp-istio-test
 spec:
   template:
     metadata:
@@ -42,6 +44,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: view-deployment
+  namespace: pyapp-istio-test
   labels:
     app: view-microservice
 spec:
@@ -56,7 +59,7 @@ spec:
     spec:
       containers:
       - name: view-microservice
-        image: xxdockerimage.azurecr.io/viewmicroservice
+        image: docker.io/blackpearl001/view-data
         ports:
         - containerPort: 5002
 
@@ -65,6 +68,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: add-deployment
+  namespace: pyapp-istio-test
   labels:
     app: add-microservice
 spec:
@@ -79,6 +83,28 @@ spec:
     spec:
       containers:
       - name: add-microservice
-        image: xxdockerimage.azurecr.io/addmicroservice
+        image: docker.io/blackpearl001/add-data
         ports:
         - containerPort: 5001
+
+#---
+#apiVersion: apps/v1
+#kind: Deployment
+#metadata:
+#  name: nginx-deployment
+#  namespace: pyapp-istio-test
+#spec:
+#  replicas: 1  # Number of replicas
+#  selector:
+#    matchLabels:
+#      app: nginx
+#  template:
+#    metadata:
+#      labels:
+#        app: nginx
+#    spec:
+#      containers:
+#      - name: nginx
+#        image: docker.io/blackpearl001/nginx  # Using the alpine version of nginx
+#        ports:
+#        - containerPort: 80  # Nginx listens on port 80
