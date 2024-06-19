@@ -89,7 +89,7 @@ stages:
       inputs:
         targetType: 'inline'  
         script: |
-          docker buildx build -f $(dockerfilePath_add) --platform linux/amd64,linux/arm64 -t $(imageRepository_add):$(tag) --push .
+          docker buildx build -f $(dockerfilePath_add) --platform linux/amd64,linux/arm64 -t $(containerRegistry)/$(imageRepository_add):$(tag) --push .
 
     - upload: manifests
       artifact: manifests
