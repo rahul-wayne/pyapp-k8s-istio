@@ -113,8 +113,9 @@ docker buildx build --platform linux/amd64,linux/arm64 -t your-registry/your-ima
 
 
 
-*   To enable mutual TLS (mTLS) across your entire Istio service mesh, you need to configure PeerAuthentication and DestinationRule
+To enable mutual TLS (mTLS) across your entire Istio service mesh, you need to configure PeerAuthentication and DestinationRule
 to achive this, apply ymls in mtls directory
+----------------
 
 Ensure that the PeerAuthentication policy is correctly applied:
 
