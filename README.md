@@ -1,3 +1,5 @@
+# python flask application with mongodb and istio on AKS cluster
+
 Database configuration details
 -------------------------------
 demo microservice applicationsdsd
@@ -5,8 +7,6 @@ mongosh
 use microserviceDB
 db.createCollection('data')
 
-# pyapp_aks_istio
-# pyapp_aks_istio
 
 Cluster configuration
 -------------------------------
