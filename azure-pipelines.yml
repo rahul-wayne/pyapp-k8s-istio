@@ -55,11 +55,20 @@ stages:
     #      $(tag)
     #    addPipelineData: true
     - task: Bash@3
+      displayName: 'Create custom buildx builder'
+      inputs:
+        targetType: 'inline'
+        script: |
+          docker buildx create --name mybuilder
+          docker buildx ls
+          docker buildx use mybuilder
+          docker buildx inspect --bootstrap
+
+    - task: Bash@3
       displayName: 'Build and Push view_microservice Docker Image using Buildx'
       inputs:
         targetType: 'inline'    
         script: |
-          whoami
           docker buildx build -f Dockerfile_view_data --platform linux/amd64,linux/arm64 -t blackpearl001/view-data --push .
    #       docker buildx build -f $(dockerfilePath_view) --platform linux/amd64,linux/arm64 -t $(imageRepository_view):$(tag) --push .
 
