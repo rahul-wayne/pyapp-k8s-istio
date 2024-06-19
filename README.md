@@ -40,3 +40,7 @@ You can also enable internal ingress gateway by using the following command, if 
 az aks mesh enable-ingress-gateway --resource-group $RESOURCE_GROUP --name $CLUSTER --ingress-gateway-type internal
 
 https://learn.microsoft.com/en-in/azure/aks/istio-deploy-ingress#enable-external-ingress-gateway
+
+Step 6: Access the application from outside the cluster via external ip
+
+kubectl get svc -n aks-istio-ingress
