@@ -34,37 +34,44 @@ stages:
       name: dev
       vmImage: $(vmImageName)
     steps:
-    - task: Docker@2
-      displayName: Build and push an image view_microservice
+
+    #- task: Docker@2
+    #  displayName: Build and push an image view_microservice
+    #  inputs:
+    #    command: build
+    #    repository: $(imageRepository_view)
+    #    dockerfile: $(dockerfilePath_view)
+    #    containerRegistry: $(dockerRegistryServiceConnection)
+    #    buildContext: .
+    #    tags: |
+    #      $(tag)
+    #    addPipelineData: true
+    - task: Bash@3
+      displayName: 'Build and Push view_microservice Docker Image using Buildx'
       inputs:
-        command: build
-        repository: $(imageRepository_view)
-        dockerfile: $(dockerfilePath_view)
-        containerRegistry: $(dockerRegistryServiceConnection)
-        buildContext: .
-        tags: |
-          $(tag)
-        addPipelineData: true
-    - script: |
-        docker buildx build --platform linux/amd64,linux/arm64 -t $(imageRepository_view):$(tag) --push .
-      displayName: Build and Push View Docker Image using Buildx
+        targetType: 'inline'    
+        script: |
+          docker buildx build -f $(dockerfilePath_view) --platform linux/amd64,linux/arm64 -t $(imageRepository_view):$(tag) --push .
 
 
-    - task: Docker@2
-      displayName: Build and push an image add_microservice
+    #- task: Docker@2
+    #  displayName: Build and push an image add_microservice
+    #  inputs:
+    #    command: build
+    #    repository: $(imageRepository_add)
+    #    dockerfile: $(dockerfilePath_add)
+    #    containerRegistry: $(dockerRegistryServiceConnection)
+    #    buildContext: .
+    #    tags: |
+    #      $(tag)
+    #    addPipelineData: true
+
+    - task: Bash@3
+      displayName: 'Build and Push add_microservice Docker Image using Buildx'
       inputs:
-        command: build
-        repository: $(imageRepository_add)
-        dockerfile: $(dockerfilePath_add)
-        containerRegistry: $(dockerRegistryServiceConnection)
-        buildContext: .
-        tags: |
-          $(tag)
-        addPipelineData: true
-
-    - script: |
-        docker buildx build --platform linux/amd64,linux/arm64 -t $(imageRepository_add):$(tag) --push .
-      displayName: Build and Push Add Docker Image using Buildx
+        targetType: 'inline'  
+        script: |
+          docker buildx build -f $(dockerfilePath_add) --platform linux/amd64,linux/arm64 -t $(imageRepository_add):$(tag) --push .
 
     - upload: manifests
       artifact: manifests
