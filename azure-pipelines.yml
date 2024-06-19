@@ -11,14 +11,14 @@ resources:
 variables:
 
   # Container registry service connection established during pipeline creation
-  #dockerRegistryServiceConnection: '4ee81322-33fc-4229-9ad3-7f8bd0a19c1e'
-  dockerRegistryServiceConnection: 'dockerhub'
-  #imageRepository_view: 'viewmicroservice'
-  #imageRepository_add: 'addmicroservice'
-  #containerRegistry: 'xxdockerimage.azurecr.io'
-  imageRepository_view: 'view-data'
-  imageRepository_add: 'add-data'
-  containerRegistry: 'docker.io/blackpearl001'
+  dockerRegistryServiceConnection: '4ee81322-33fc-4229-9ad3-7f8bd0a19c1e'
+  #dockerRegistryServiceConnection: 'dockerhub'
+  imageRepository_view: 'viewmicroservice'
+  imageRepository_add: 'addmicroservice'
+  containerRegistry: 'xxdockerimage.azurecr.io'
+  #imageRepository_view: 'view-data'
+  #imageRepository_add: 'add-data'
+  #containerRegistry: 'docker.io/blackpearl001'
   dockerfilePath_view: 'Dockerfile_view_data'
   dockerfilePath_add: 'Dockerfile_add_data'
   tag: '$(Build.BuildId)'
@@ -39,7 +39,7 @@ stages:
       vmImage: $(vmImageName)
     steps:
     - task: Docker@2
-      displayName: 'Login to Docker Container Registry'
+      displayName: 'Login to Azure Container Registry'
       inputs:
         containerRegistry: $(dockerRegistryServiceConnection)  # Use the name of your Azure Service Connection
         command: 'login'
@@ -59,11 +59,6 @@ stages:
       inputs:
         targetType: 'inline'    
         script: |
-          docker buildx create --name mybuilder
-          docker buildx ls
-          docker buildx use mybuilder
-          docker buildx inspect --bootstrap
-          docker buildx inspect mybuilder
           docker buildx build -f Dockerfile_view_data --platform linux/amd64,linux/arm64 -t blackpearl001/view-data --push .
    #       docker buildx build -f $(dockerfilePath_view) --platform linux/amd64,linux/arm64 -t $(imageRepository_view):$(tag) --push .
 
