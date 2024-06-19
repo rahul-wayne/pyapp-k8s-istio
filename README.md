@@ -44,3 +44,68 @@ https://learn.microsoft.com/en-in/azure/aks/istio-deploy-ingress#enable-external
 Step 6: Access the application from outside the cluster via external ip
 
 kubectl get svc -n aks-istio-ingress
+
+
+Setup custom buildx builder for multi-platform docker image building
++++++++++++++++++
+On AMD64
+-------
+1. Install QEMU:
+sudo apt-get install qemu-user-static
+
+2. Enable Binfmt_misc:
+Enable the binfmt_misc kernel module to allow the execution of binaries for foreign architectures:
+sudo update-binfmts --enable qemu-arm
+sudo update-binfmts --enable qemu-armeb
+sudo update-binfmts --enable qemu-aarch64
+sudo update-binfmts --enable qemu-aarch64_be
+
+
+3. Restart Docker:
+sudo systemctl restart docker
+
+4. Create Buildx Builder:
+docker buildx create --name mybuilder
+docker buildx ls
+docker buildx use mybuilder
+docker buildx inspect --bootstrap
+docker buildx inspect mybuilder
+
+5. Build the Multi-Platform Image:
+docker buildx build --platform linux/amd64,linux/arm64 -t your-image-name .
+
+6. Push the Multi-Platform Image:
+docker buildx build --platform linux/amd64,linux/arm64 -t your-registry/your-image-name:tag --push .
+
+
+
+ON ARM64
+-----
+1. First, you need to install the qemu packages that include support for x86_64 emulation. On a Debian-based system like Ubuntu, you can install these packages as follows:
+
+sudo apt update
+sudo apt install qemu qemu-user qemu-user-static binfmt-support
+
+2. Enable QEMU for amd64
+
+sudo update-binfmts --enable qemu-x86_64
+
+3. Verify the Registration
+
+sudo update-binfmts --display qemu-x86_64
+
+sudo update-binfmts --enable qemu-x86_64
+
+4. List Existing Registered Binfmts
+
+sudo update-binfmts --display
+
+4. Create Buildx Builder:
+docker buildx create --name mybuilder
+docker buildx ls
+docker buildx use mybuilder
+docker buildx inspect --bootstrap
+docker buildx inspect mybuilder
+
+6. Push the Multi-Platform Image:
+docker buildx build --platform linux/amd64,linux/arm64 -t your-registry/your-image-name:tag --push .

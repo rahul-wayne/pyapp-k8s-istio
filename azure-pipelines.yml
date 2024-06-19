@@ -46,7 +46,7 @@ stages:
     #- task: Docker@2
     #  displayName: Build and push an image view_microservice
     #  inputs:
-    #    command: build
+    #    command: buildAndPush
     #    repository: $(imageRepository_view)
     #    dockerfile: $(dockerfilePath_view)
     #    containerRegistry: $(dockerRegistryServiceConnection)
@@ -54,14 +54,15 @@ stages:
     #    tags: |
     #      $(tag)
     #    addPipelineData: true
+    
     - task: Bash@3
       displayName: 'Create custom buildx builder'
       inputs:
         targetType: 'inline'
         script: |
           docker buildx create --name mybuilder
-          docker buildx ls
           docker buildx use mybuilder
+          docker buildx ls
           docker buildx inspect --bootstrap
 
     - task: Bash@3
@@ -75,7 +76,7 @@ stages:
     #- task: Docker@2
     #  displayName: Build and push an image add_microservice
     #  inputs:
-    #    command: build
+    #    command: buildAndPush
     #    repository: $(imageRepository_add)
     #    dockerfile: $(dockerfilePath_add)
     #    containerRegistry: $(dockerRegistryServiceConnection)
